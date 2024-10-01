@@ -6,6 +6,25 @@ import InputField from '../components/Input'
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  })
+
+  async function tryLogin(userCredentials){
+    // Validação de campos
+    
+    console.log("Validando os campos")
+    console.log(userCredentials)
+
+    const response = await loginWithEmailAndPassword(userCredentials)
+    if (response.error){
+        console.log("Erro ao logar")
+        console.log(response)
+        return
+    }
+  }
+
 
   return (
     <LinearGradient colors={['#5E17EB', '#991164']} style={styles.gradient}>
@@ -31,7 +50,7 @@ export default function LoginScreen({ navigation }) {
           />
 
           <LinearGradient colors={['#5E17EB', '#991164']} style={styles.button}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity onPress={() => tryLogin(user)}>
               <Text style={styles.buttonText}> Acessar </Text>
             </TouchableOpacity>
           </LinearGradient>
