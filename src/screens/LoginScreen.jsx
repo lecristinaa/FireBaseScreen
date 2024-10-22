@@ -1,63 +1,74 @@
 import { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import { StyleSheet, SafeAreaView, View, Image, TouchableOpacity, Text } from 'react-native'
+import { StyleSheet, SafeAreaView, View, TouchableOpacity, Text, Alert } from 'react-native'
 import InputField from '../components/Input'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import InitializeApp from './App.js'
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: ''
   })
 
-  async function tryLogin(userCredentials){
-    // Validação de campos
-    
-    console.log("Validando os campos")
-    console.log(userCredentials)
+  // Função para lidar com o login
+  const handleLogin = async () => {
+    const auth = getAuth(InitializeApp)
 
-    const response = await loginWithEmailAndPassword(userCredentials)
-    if (response.error){
-        console.log("Erro ao logar")
-        console.log(response)
-        return
+    try {
+      // Tenta fazer login com o email e senha 
+      const response = await signInWithEmailAndPassword(auth, user.email, user.password)
+      console.log('Login bem-sucedido:', response.user)
+      // Redireciona para a Home após o login
+      navigation.navigate('Home')
+    } catch (error) {
+      console.error('Erro no login:', error.message)
+      Alert.alert('Erro', error.message) // Exibe um alerta de erro
     }
   }
 
+  // Função para atualizar o estado do usuário
+  const handleInputChange = (field, value) => {
+    setUser(prevState => ({ ...prevState, [field]: value }))
+  }
 
   return (
     <LinearGradient colors={['#5E17EB', '#991164']} style={styles.gradient}>
       <SafeAreaView style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={require('../assets/user.png')} style={styles.image} />
         </View>
 
         <View style={styles.loginContainer}>
-          <InputField
-            placeholder="Digite seu e-mail: "
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
+          <InputField 
+            label="Email" 
+            value={user.email} 
+            onChangeText={value => handleInputChange('email', value)} 
+            keyboardType="email-address" 
+            placeholder="Digite seu email" 
           />
 
-          <InputField
-            placeholder="Digite sua senha: "
-            keyboardType="default"
-            secureTextEntry={true}
-            value={password}
-            onChangeText={setPassword}
+          
+          <InputField 
+            label="Senha" 
+            value={user.password} 
+            onChangeText={value => handleInputChange('password', value)} 
+            secureTextEntry 
+            placeholder="Digite sua senha" 
           />
 
+          
           <LinearGradient colors={['#5E17EB', '#991164']} style={styles.button}>
-            <TouchableOpacity onPress={() => tryLogin(user)}>
-              <Text style={styles.buttonText}> Acessar </Text>
+            <TouchableOpacity onPress={handleLogin}>
+              <Text style={styles.buttonText}> Entrar </Text>
             </TouchableOpacity>
           </LinearGradient>
 
-          <TouchableOpacity onPress={() => navigation.navigate('SingUp')}>
-            <Text style={styles.text}>Caso não tenha uma, crie sua conta!</Text>
-          </TouchableOpacity>
+          
+          <LinearGradient colors={['#5E17EB', '#991164']} style={styles.button}>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Text style={styles.buttonText}> Voltar </Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -78,11 +89,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
-    height: 300,
-    width: 200,
-    resizeMode: 'contain',
-  },
   loginContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -90,6 +96,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 80,
     borderTopRightRadius: 80,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     padding: 20,
     marginTop: -50, 
     overflow: 'hidden', 
