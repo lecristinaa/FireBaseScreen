@@ -8,3 +8,10 @@
 
    -> npm i firebase/auth
    -- serve para conectar com o esquema de autenticação do Firebase
+
+
+
+   # Grupo
+   - Alessandra Cristina de Oliveira
+   - Isabelle Natale
+   - Sofia de Sousa
