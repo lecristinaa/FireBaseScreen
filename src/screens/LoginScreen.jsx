@@ -1,35 +1,34 @@
 import { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import { StyleSheet, SafeAreaView, View, TouchableOpacity, Text, Alert } from 'react-native'
+import { StyleSheet, SafeAreaView, View, TouchableOpacity, Text } from 'react-native'
 import InputField from '../components/Input'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import InitializeApp from './App.js'
 
 export default function LoginScreen({ navigation }) {
+  // Estado do usuário com campos para email e senha
   const [user, setUser] = useState({
     email: '',
     password: ''
   })
 
-  // Função para lidar com o login
+  // Função para fazer login
   const handleLogin = async () => {
     const auth = getAuth(InitializeApp)
 
     try {
-      // Tenta fazer login com o email e senha 
       const response = await signInWithEmailAndPassword(auth, user.email, user.password)
-      console.log('Login bem-sucedido:', response.user)
-      // Redireciona para a Home após o login
-      navigation.navigate('Home')
+      console.log('Login bem-sucedido:', response.user) // Log do usuário logado
+      navigation.navigate('Home') // Redireciona para a tela inicial
     } catch (error) {
-      console.error('Erro no login:', error.message)
-      Alert.alert('Erro', error.message) // Exibe um alerta de erro
+      console.error('Erro no login:', error.message) // Log do erro
+      Alert.alert('Erro', error.message) // Mensagem de erro
     }
   }
 
-  // Função para atualizar o estado do usuário
+  // Função para atualizar o estado ao mudar campos de entrada
   const handleInputChange = (field, value) => {
-    setUser(prevState => ({ ...prevState, [field]: value }))
+    setUser(prevState => ({ ...prevState, [field]: value })) // Atualiza o campo específico
   }
 
   return (
@@ -46,8 +45,6 @@ export default function LoginScreen({ navigation }) {
             keyboardType="email-address" 
             placeholder="Digite seu email" 
           />
-
-          
           <InputField 
             label="Senha" 
             value={user.password} 
@@ -55,15 +52,12 @@ export default function LoginScreen({ navigation }) {
             secureTextEntry 
             placeholder="Digite sua senha" 
           />
-
-          
           <LinearGradient colors={['#5E17EB', '#991164']} style={styles.button}>
             <TouchableOpacity onPress={handleLogin}>
               <Text style={styles.buttonText}> Entrar </Text>
             </TouchableOpacity>
           </LinearGradient>
 
-          
           <LinearGradient colors={['#5E17EB', '#991164']} style={styles.button}>
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
               <Text style={styles.buttonText}> Voltar </Text>
@@ -96,8 +90,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 80,
     borderTopRightRadius: 80,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
     padding: 20,
     marginTop: -50, 
     overflow: 'hidden', 

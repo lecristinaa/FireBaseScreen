@@ -1,7 +1,7 @@
 import { TextInput, StyleSheet, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-export default function InputField ({ placeholder, keyboardType, secureTextEntry, onChangeText }) {
+export default function InputField ({ placeholder, keyboardType, secureTextEntry, onChangeText, value }) {
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#5E17EB', '#991164']} style={styles.gradient}>
@@ -12,10 +12,16 @@ export default function InputField ({ placeholder, keyboardType, secureTextEntry
           secureTextEntry={secureTextEntry}
           placeholderTextColor="#afafaf"
           onChangeText={onChangeText}
+          value={value}  // Adicionado aqui
         />
       </LinearGradient>
     </View>
   )
+}
+
+InputField.defaultProps = {
+  keyboardType: 'default',
+  secureTextEntry: false,
 }
 
 const styles = StyleSheet.create({
@@ -30,11 +36,10 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 60,
-    width: 300,
+    width: '100%',  
     backgroundColor: '#fff', 
     borderRadius: 25,
     paddingLeft: 10,
     color: '#afafaf',
   },
 })
-
